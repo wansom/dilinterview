@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../model/user");
 const router = express.Router()
 
-router.post("/register", async (req, res) => {
+router.post("/register", async (req, res,next) => {
   try {
     // Get user input
     const { email, password } = req.body;
@@ -28,8 +28,6 @@ router.post("/register", async (req, res) => {
 
     // Create user in our database
     const user = await User.create({
-      first_name,
-      last_name,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
     });
@@ -48,11 +46,11 @@ router.post("/register", async (req, res) => {
     // return new user
     res.status(201).json(user);
   } catch (err) {
-    console.log(err);
+    return next(err)
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", async (req, res,next) => {
   try {
     // Get user input
     const { email, password } = req.body;
@@ -67,7 +65,7 @@ router.post("/login", async (req, res) => {
     if (user && (await bcrypt.compare(password, user.password))) {
       // Create token
       const token = jwt.sign(
-        { user_id: user._id, email },
+        { user_id: user._id, email},
         process.env.TOKEN_KEY,
         {
           expiresIn: "2h",
@@ -80,9 +78,8 @@ router.post("/login", async (req, res) => {
       // user
       res.status(200).json(user);
     }
-    res.status(400).send("Invalid Credentials");
   } catch (err) {
-    console.log(err);
+    return next(err);
   }
 });
 

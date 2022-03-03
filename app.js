@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 
 
 app.use("/auth", auth);
-app.use("/patch", patch);
+app.use("/dashboard", patch);
 // Handle routing errors
 app.use((req, res, next) => {
   const error = new Error("resource not found");
