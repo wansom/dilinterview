@@ -1,9 +1,10 @@
 const assert = require('chai').assert
-const app = require('../app')
+const register = require('../app').all
+const login = require('../app')._router
 
 
 describe('App',function(){
     it('response',function(){
-        assert.notEqual(app(),403)
+        assert.notEqual(register,403)
     })
 })
